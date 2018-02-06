@@ -1,0 +1,19 @@
+/*
+    imagem fundo tela: https://stackoverflow.com/questions/22887548/css-stretching-background-image-to-100-width-and-height-of-screen
+*/
+
+html {
+    height: 100%
+}
+
+body {
+    padding: 0;
+    background-image:url("../img/fundo1.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+#mario {
+    position: absolute;    
+    top: calc(100% - 165px)
+}
