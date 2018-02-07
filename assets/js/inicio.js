@@ -54,5 +54,7 @@ $(document).ready(function () {
         }
     }
 
-    setInterval(() => { gravidade([mario]) }, 1000)
+    setInterval(() => { 
+        mario.pos.top = gravidade([mario]) 
+    }, 1000)
 })
