@@ -4,56 +4,65 @@ document.addEventListener("keyup", paraSom, false)
 var contaCenario = 1
 const TOTAL_CENARIOS = 2
 
-function paraSom() {
+var movimentosMario = []
+movimentosMario[39] = false
+movimentosMario[37] = false
+movimentosMario[32] = false
+
+var cenarioAtual
+
+function paraSom(e) {
+    movimentosMario[e.keyCode] = false
     audioElement.pause();
 }
 
 function keyDownTextField(e) {
-    var keyCode = e.keyCode;
+    movimentosMario[e.keyCode] = true
+    mario.movimentar()
 
-    mario.pos = $('#mario').position()
-
-    var pos = mario.movimentar(keyCode)
-
-    cenario.trocar(pos)
+    cenario.trocar()
 }
 
 var mario = {
     nome: 'mario',
     pos: 0,
+    caindo: false,
+    saltando: false,
 
-    movimentar: function (keyCode) {
+    movimentar: function () {
         this.pos = $('#mario').position()
-        switch (keyCode) {
-            case 39:
-                $('#mario').css("left", (this.pos.left + 10) + "px")
-                audioElement.play()
-                return this.pos.left
-                break
-            case 37:
-                $('#mario').css("left", (this.pos.left - 10) + "px")
-                return this.pos.left
-                break
-            case 32:
-                $('#mario').css("top", (this.pos.top - 150) + "px")
-                break
-            default:
-                console.log('Mario, fique parado!')
-                break
+
+        if (movimentosMario[39] && !movimentosMario[37]) {
+            $('#mario').css("left", (this.pos.left + 10) + "px")
+        }
+        if (movimentosMario[37] && !movimentosMario[39] && (this.pos.left>10 || cenarioAtual>1)) {
+            $('#mario').css("left", (this.pos.left - 10) + "px")
+        }
+        if (movimentosMario[32] && !this.caindo) {
+            this.saltando = true            
         }
     }
 }
 
-let cenario = {
-    trocar: (posMario) => {
-        if (posMario >= $(window).width() - 150) {
+var cenario = {
+    trocar: () => {
+        if (mario.pos.left >= $(window).width() - 150) {
             contaCenario++
+            cenarioAtual = contaCenario
             $('body').css("background-image", "url(./assets/img/fundo" + contaCenario + ".jpg)")
             $('#mario').css("left", 10 + "px")
-
-            contaCenario = contaCenario >= TOTAL_CENARIOS ? 0 : contaCenario
+            contaCenario = contaCenario >= TOTAL_CENARIOS ? 1 : contaCenario
+        } else if(mario.pos.left <= -10) {
+            cenarioAtual = contaCenario
+            contaCenario = contaCenario > 1 ? contaCenario-- : 1
+            $('body').css("background-image", "url(./assets/img/fundo" + contaCenario + ".jpg)")
+            $('#mario').css("left", ($(window).width() - 200) + "px")            
         }
     }
 }
 
-setInterval(() => gravidade([mario]), 100)
+setInterval(() => {
+    mario.pos = $('#mario').position()
+    gravidade([mario])
+    salto([mario])
+}, 5)
