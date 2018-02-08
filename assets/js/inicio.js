@@ -17,10 +17,7 @@ function paraSom(e) {
 }
 
 function keyDownTextField(e) {
-    movimentosMario[e.keyCode] = true
-    mario.movimentar()
-
-    cenario.trocar()
+    movimentosMario[e.keyCode] = true    
 }
 
 var mario = {
@@ -33,10 +30,10 @@ var mario = {
         this.pos = $('#mario').position()
 
         if (movimentosMario[39] && !movimentosMario[37]) {
-            $('#mario').css("left", (this.pos.left + 10) + "px")
+            $('#mario').css("left", (this.pos.left + 5) + "px")
         }
         if (movimentosMario[37] && !movimentosMario[39] && (this.pos.left>10 || cenarioAtual>1)) {
-            $('#mario').css("left", (this.pos.left - 10) + "px")
+            $('#mario').css("left", (this.pos.left - 5) + "px")
         }
         if (movimentosMario[32] && !this.caindo) {
             this.saltando = true            
@@ -65,4 +62,6 @@ setInterval(() => {
     mario.pos = $('#mario').position()
     gravidade([mario])
     salto([mario])
-}, 5)
+    mario.movimentar()
+    cenario.trocar()
+}, 50)
